@@ -3,6 +3,11 @@
 - Node 16.15
 - firebase cli `npm install -g firebase-toolsnpm install -g firebase-tools` more about it [here](https://firebase.google.com/docs/cli)
 
+## Emulating Firebase locally
+- `firebase init` -> select emulators (hosting, firestore, auth)
+- `firebase emulators:start`
+- 
+ 
 ## Available Scripts
 
 In the project directory, you can run:
