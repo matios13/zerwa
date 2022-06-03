@@ -4,10 +4,15 @@ import { useEffect } from "react";
 import GoogleButton from 'react-google-button';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../firebase/firebaseAuth";
+import { logEvent } from "@firebase/analytics";
+import { analytics } from "../../firebase/firebase";
 
 export const Login = () => {
     const { user,  signInWithGoogle } = useAuth();
     const navigate = useNavigate();
+    useEffect(()=>{
+        logEvent(analytics,"page_view")
+    },[]);
     useEffect(() => {
         if (user) navigate("/");
     }, [user,navigate]);

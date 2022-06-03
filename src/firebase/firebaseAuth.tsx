@@ -1,3 +1,4 @@
+import { logEvent } from "@firebase/analytics";
 import {
     getAuth, GoogleAuthProvider, signInWithPopup,
     signOut as logout,
@@ -6,7 +7,7 @@ import {
 import { collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
 import { UserData } from "../models/UserData";
-import { firebaseApp } from "./firebase";
+import { analytics, firebaseApp } from "./firebase";
 import { FirebaseConverter } from "./firebaseConverter";
 
 
@@ -46,6 +47,11 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         getOrCreateuserData().then(() => setIsAuthenticated(true))
         // eslint-disable-next-line
     }, [user])
+    useEffect(() => {
+        if(isAuthenticated){
+            logEvent(analytics,"login")
+        }
+    },[isAuthenticated])
 
     const signInWithGoogle = async () => {
         signInWithPopup(getAuth(firebaseApp), googleProvider);

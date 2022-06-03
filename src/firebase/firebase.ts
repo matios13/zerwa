@@ -13,7 +13,7 @@ const firebaseConfig = {
   measurementId: "G-2080DXRR2D"
 };
 export const firebaseApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(firebaseApp);
+export const analytics = getAnalytics(firebaseApp);
 
 if(window.location.hostname==="localhost"){
   connectAuthEmulator(getAuth(),"http://localhost:9099")
