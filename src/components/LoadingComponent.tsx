@@ -7,11 +7,13 @@ type LoadingProps = {
 
 export const LoadingComponent = ({ message }: LoadingProps) => {
     return (
-        <Box p={20} sx={{
+        <Box p={2} sx={{
             display:'flex',
             alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection:'column'
         }}>
-            <Typography mr={20}>🏗 {message}</Typography>
+            <Typography m={2}>{message}</Typography>
             <CircularProgress /> 
         </Box> )
 }

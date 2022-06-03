@@ -46,23 +46,24 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         return () => unsubscribe();
     }, []);
     useEffect(() => {
-        getOrCreateuserData().then(()=>setIsAuthenticated(true))
-    },[ user ])
+        getOrCreateuserData().then(() => setIsAuthenticated(true))
+    }, [user])
 
     const signInWithGoogle = async () => {
         signInWithPopup(getAuth(firebaseApp), googleProvider);
     };
     const getOrCreateuserData = async () => {
+        console.log("")
         try {
             if (user) {
-                const users = collection(db,"users")
-                const docRef= doc(users,user.uid).withConverter(new FirebaseConverter<UserData>())
+                const users = collection(db, "users")
+                const docRef = doc(users, user.uid).withConverter(new FirebaseConverter<UserData>())
                 var userData = (await getDoc(docRef)).data();
                 if (!userData) {
                     userData = new UserData(user.uid, user.displayName, user.email)
-                    await setDoc(docRef, userData);
-                    setUserData(userData)
+                    await setDoc(docRef, userData);   
                 }
+                setUserData(userData)
             }
         }
         catch (err: any) {
@@ -73,7 +74,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         logout(getAuth(firebaseApp));
     };
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, signInWithGoogle, signOut }}>
+        <AuthContext.Provider value={{ user, userData, isAuthenticated, signInWithGoogle, signOut }}>
             {children}
         </AuthContext.Provider>
     );
