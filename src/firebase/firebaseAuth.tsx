@@ -3,10 +3,7 @@ import {
     signOut as logout,
     User
 } from "firebase/auth";
-import {
-    setDoc, collection, getDoc, getFirestore,
-    doc
-} from "firebase/firestore";
+import { collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
 import { UserData } from "../models/UserData";
 import { firebaseApp } from "./firebase";
@@ -47,12 +44,13 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     }, []);
     useEffect(() => {
         getOrCreateuserData().then(() => setIsAuthenticated(true))
+        // eslint-disable-next-line
     }, [user])
 
     const signInWithGoogle = async () => {
         signInWithPopup(getAuth(firebaseApp), googleProvider);
     };
-    const getOrCreateuserData = async () => {
+    async function getOrCreateuserData(){
         console.log("")
         try {
             if (user) {

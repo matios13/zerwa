@@ -1,10 +1,9 @@
-import { Button, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
-import { AppBar } from '@mui/material';
-import { Fragment, useState } from "react";
-import MenuIcon from '@mui/icons-material/Menu';
-import { useAuth } from "../firebase/firebaseAuth";
 import { AccountCircle } from "@mui/icons-material";
+import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { useState } from "react";
+import { useAuth } from "../firebase/firebaseAuth";
 
 export const AppBarComponent = () => {
     const { signOut } = useAuth();
