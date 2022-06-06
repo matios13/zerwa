@@ -72,7 +72,7 @@ export const AdminEditPage: React.FC = () => {
                         <Button color="secondary" onClick={() => setCreateNew(true)}>Stwórz nowe</Button>
                         <Select
                             sx={{ width: 300 }}
-                            value={selectedEventIndex ? events[selectedEventIndex].name : ""}
+                            value={selectedEventIndex !== undefined ? events[selectedEventIndex].name : ""}
                             label="Wydarzenie">
                             {events.map((event, index) => <MenuItem onClick={() => setSelectedEventIndex(index)} key={event.name} value={event.name}>{event.name}</MenuItem>)}
                         </Select>
