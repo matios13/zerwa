@@ -61,6 +61,7 @@ export const AdminEditPage: React.FC = () => {
             console.error("no selected event")
         }
     }
+    
     return (
         <Fragment>
             <AppBarComponent />
