@@ -6,21 +6,20 @@ import {
 } from "firebase/auth";
 import { collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
+import { LoadingComponent } from "../components/LoadingComponent";
 import { UserData } from "../models/UserData";
 import { analytics, firebaseApp } from "./firebase";
 import { FirebaseConverter } from "./firebaseConverter";
 
 
-
 type AuthContextType = {
     user: User | null,
-    userData?: UserData,
-    isAuthenticated: boolean,
+    userData?: UserData
     signInWithGoogle: () => void,
     signOut: () => void
 
 }
-const AuthContext = createContext<AuthContextType>({ user: null, isAuthenticated: false, signInWithGoogle: () => { }, signOut: () => { } });
+const AuthContext = createContext<AuthContextType>({ user: null, signInWithGoogle: () => { }, signOut: () => { } });
 
 export const useAuth = () => {
     return useContext(AuthContext);
@@ -32,32 +31,34 @@ type AuthProviderProps = {
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [userData, setUserData] = useState<UserData>();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const googleProvider = new GoogleAuthProvider();
     const db = getFirestore(firebaseApp);
 
     useEffect(() => {
         const unsubscribe = getAuth().onAuthStateChanged(user => {
+            setLoading(false)
             setUser(user);
         });
         // Cleanup subscription on unmount
         return () => unsubscribe();
     }, []);
     useEffect(() => {
-        getOrCreateuserData().then(() => setIsAuthenticated(true))
+        if (user) {
+            getOrCreateuserData()
+        }
         // eslint-disable-next-line
     }, [user])
     useEffect(() => {
-        if(isAuthenticated){
-            logEvent(analytics,"login")
+        if (isLoading) {
+            logEvent(analytics, "login")
         }
-    },[isAuthenticated])
+    }, [isLoading])
 
     const signInWithGoogle = async () => {
         signInWithPopup(getAuth(firebaseApp), googleProvider);
     };
-    async function getOrCreateuserData(){
-        console.log("")
+    async function getOrCreateuserData() {
         try {
             if (user) {
                 const users = collection(db, "users")
@@ -65,7 +66,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
                 var userData = (await getDoc(docRef)).data();
                 if (!userData) {
                     userData = new UserData(user.uid, user.displayName, user.email)
-                    await setDoc(docRef, userData);   
+                    await setDoc(docRef, userData);
                 }
                 setUserData(userData)
             }
@@ -78,8 +79,9 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         logout(getAuth(firebaseApp));
     };
     return (
-        <AuthContext.Provider value={{ user, userData, isAuthenticated, signInWithGoogle, signOut }}>
-            {children}
+        <AuthContext.Provider value={{ user, userData, signInWithGoogle, signOut }}>
+            {!isLoading && children}
+            {isLoading && <LoadingComponent message="Ładowanie" />}
         </AuthContext.Provider>
     );
 }

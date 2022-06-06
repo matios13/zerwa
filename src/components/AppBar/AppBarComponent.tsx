@@ -3,12 +3,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
-import { useAuth } from "../firebase/firebaseAuth";
+import { useNavigate } from "react-router";
+import { useAuth } from "../../firebase/firebaseAuth";
+import { SecurityRole } from "../../models/UserData";
 
 export const AppBarComponent = () => {
-    const { signOut } = useAuth();
+    const { signOut, userData } = useAuth();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
+    const navigate = useNavigate()
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -16,6 +18,7 @@ export const AppBarComponent = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
     return (
         <AppBar position="static">
             <Toolbar >
@@ -54,6 +57,7 @@ export const AppBarComponent = () => {
                         onClose={handleClose}
                     >
                         <MenuItem color="secondary" onClick={signOut}>Wyloguj</MenuItem>
+                        {userData?.security_role === SecurityRole.ADMIN && <MenuItem onClick={() => navigate("/admin")}>Admin</MenuItem>}
                     </Menu>
                 </div>
 
