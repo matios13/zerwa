@@ -30,7 +30,7 @@ export const AdminEditPage: React.FC = () => {
     }, [])
 
     const updateRoutesArray = (updatedRoute: ClimbingRoute): ClimbingRoute[] => {
-        if (selectedEventIndex) {
+        if (selectedEventIndex !== undefined) {
             const routes = events[selectedEventIndex].routes
             const routeToUpdate = routes.find(r => r.id === updatedRoute.id)
             if (routeToUpdate) {
@@ -47,7 +47,7 @@ export const AdminEditPage: React.FC = () => {
         return []
     }
     const handeUpdateRoute = (route: ClimbingRoute) => {
-        if (selectedEventIndex) {
+        if (selectedEventIndex !== undefined) {
             const updatedRoutes = updateRoutesArray(route)
             const updatedEvent = { ...events[selectedEventIndex], routes: updatedRoutes }
             setEvents(events.map((event, index) => {
