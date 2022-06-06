@@ -11,20 +11,28 @@ import Login from './pages/login/Login';
 import PrivateRoute from './PrivateRoute';
 import { Hompepage } from './pages/homepage/Homepage';
 import { AuthProvider } from './firebase/firebaseAuth';
-
+import { SecurityRole } from './models/UserData';
+import { AdminEditPage } from './pages/admin/AdminEditPage';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import {  LocalizationProvider } from '@mui/x-date-pickers';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/Login" element={<Login />} />
-            <Route path="/" element={<PrivateRoute>
-              <Hompepage />
-            </PrivateRoute>} />
-          </Routes>
-        </BrowserRouter>
+        <LocalizationProvider dateAdapter={AdapterLuxon}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/Login" element={<Login />} />
+              <Route path="/" element={<PrivateRoute>
+                <Hompepage />
+              </PrivateRoute>} />
+              <Route path="/admin" element={<PrivateRoute role={SecurityRole.ADMIN}>
+                <AdminEditPage />
+              </PrivateRoute>} />
+            </Routes>
+          </BrowserRouter>
+        </LocalizationProvider>
       </AuthProvider>
     </ThemeProvider>
   );
