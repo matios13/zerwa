@@ -14,15 +14,22 @@ const Item = styled(Card)(({ theme }) => ({
     height: blockSize,
 }));
 
-type Props = { routes: ClimbingRoute[], dificulties: Difficulty[], handleMenu: (event: React.MouseEvent<HTMLElement>, id?: number) => void }
+type Props = {
+    routes: ClimbingRoute[],
+    dificulties: Difficulty[],
+    handleMenu: (event: React.MouseEvent<HTMLElement>, id?: number) => void
+    getColorForId?: (id: number) => string,
+}
 
-export const RoutesGrid: FC<Props> = ({ routes, dificulties, handleMenu }) => {
-    console.log(dificulties)
+export const RoutesGrid: FC<Props> = ({ routes, dificulties, handleMenu, getColorForId }) => {
+
     return (
         <Grid container spacing={0.5} >
             {routes.map((route, index) => (
                 <Grid item key={"eventRoute-" + index} xs={3} md={2}>
-                    <Item onClick={(event) => handleMenu(event, route.id)}>
+                    <Item sx={
+                        getColorForId ? { backgroundColor: getColorForId(route.id) } : {}
+                    } onClick={(event) => handleMenu(event, route.id)}>
                         <CustomColorBadge backgroudColor={dificulties.find((d) => d.difficulty === route.dificulty)?.colour} badgeContent={route.dificulty}>
                             <Typography variant='h6' sx={{ p: 0.5 }}>{route.id}</Typography>
                         </CustomColorBadge>
