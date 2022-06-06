@@ -16,10 +16,10 @@ export const EventCompletingPage: React.FC = () => {
     }, [])
 
     useEffect(() => {
-        if(!selectedEventIndex && events.length > 0) {
+        if (!selectedEventIndex && events.length > 0) {
             setSelectedEventIndex(0)
         }
-    }, [events])
+    }, [events, selectedEventIndex])
 
     return (
         <Fragment>
