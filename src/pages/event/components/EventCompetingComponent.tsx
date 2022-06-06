@@ -7,7 +7,7 @@ import { ClimbingEvent, getDifficultyFor } from "../../../models/ClimbingEvent";
 import { getAllUserRouteStatus, UserClimbingEvent, UserClimbingRoute, UserRouteStatus } from "../../../models/UserClimbingEvent";
 import { createNewUserEvent, findUserEventWithId, updateUserEvent } from "../../../services/events/UserEventService";
 import { dateAsString } from "../../../services/time/TimeService";
-
+import { UserEventStatisticComponent } from "./UserEventStatisticComponent";
 type Props = {
     event: ClimbingEvent
 }
@@ -113,8 +113,8 @@ export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
                 <Typography>Data rozpoczęcia : <br /> {dateAsString(event.startDate)}</Typography>
                 <Typography>Data zakończenia : <br /> {dateAsString(event.endDate)} </Typography>
             </Box>
-            <Typography align="center" variant="h6" m={2} >Suma punktów : {userClimbingEvent?.sumOfPoints}</Typography>
-            <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} getColorForId={getColorForId} />
+            {userClimbingEvent && <UserEventStatisticComponent event={event} userEvent={userClimbingEvent} />}
+            <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} getColorForId={getColorForId} addNewRouteButton={false} />
 
         </Box>)
 }

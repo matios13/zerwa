@@ -65,7 +65,7 @@ export const EditEventComponent: React.FC<Props> = ({ event, updateRoute }) => {
                 <Typography>Data rozpoczęcia : <br /> {dateAsString(event.startDate)}</Typography>
                 <Typography>Data zakończenia : <br /> {dateAsString(event.endDate)} </Typography>
             </Box>
-            <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} />
+            <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} addNewRouteButton={true} />
 
         </Box>)
 }

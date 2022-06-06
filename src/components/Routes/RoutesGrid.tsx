@@ -17,11 +17,12 @@ const Item = styled(Card)(({ theme }) => ({
 type Props = {
     routes: ClimbingRoute[],
     dificulties: Difficulty[],
-    handleMenu: (event: React.MouseEvent<HTMLElement>, id?: number) => void
+    handleMenu: (event: React.MouseEvent<HTMLElement>, id?: number) => void,
+    addNewRouteButton: boolean,
     getColorForId?: (id: number) => string,
 }
 
-export const RoutesGrid: FC<Props> = ({ routes, dificulties, handleMenu, getColorForId }) => {
+export const RoutesGrid: FC<Props> = ({ routes, dificulties, handleMenu, getColorForId, addNewRouteButton }) => {
 
     return (
         <Grid container spacing={0.5} >
@@ -36,12 +37,13 @@ export const RoutesGrid: FC<Props> = ({ routes, dificulties, handleMenu, getColo
                     </Item>
                 </Grid>
             ))}
-
-            <Grid item xs={3} md={2}>
-                <Item onClick={(event) => handleMenu(event)} color="primary">
-                    <Typography variant='h6' sx={{ lineHeight: `${blockSize}px` }}>+</Typography>
-                </Item>
-            </Grid>
+            {addNewRouteButton &&
+                <Grid item xs={3} md={2}>
+                    <Item onClick={(event) => handleMenu(event)} color="primary">
+                        <Typography variant='h6' sx={{ lineHeight: `${blockSize}px` }}>+</Typography>
+                    </Item>
+                </Grid>
+            }
         </Grid>
     )
 }
