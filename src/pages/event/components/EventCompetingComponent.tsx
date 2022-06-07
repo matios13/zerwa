@@ -18,7 +18,6 @@ type AnchorAndId = {
 }
 
 export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
-
     const dificulties = getDifficultyFor(event.type);
     const { user } = useAuth()
     const [userClimbingEvent, setUserClimbingEvent] = useState<UserClimbingEvent>();
