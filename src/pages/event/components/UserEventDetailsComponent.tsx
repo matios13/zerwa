@@ -17,7 +17,7 @@ export const UserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpdate }
     if (!userData) {
         return <></>
     }
-    if (userData && !userData.birthYear || !userData.name || !userData.sex) {
+    if (userData && (!userData.birthYear || !userData.name || !userData.sex)) {
         return (
             <Grid container justifyContent="center" alignItems="center">
                 <Grid item>
