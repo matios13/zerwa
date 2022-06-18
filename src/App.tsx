@@ -15,6 +15,7 @@ import { SecurityRole } from './models/UserData';
 import { AdminEditPage } from './pages/admin/AdminEditPage';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import {  LocalizationProvider } from '@mui/x-date-pickers';
+import { UserDetailsPage } from './pages/user/UserDetailsPage';
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
               <Route path="/Login" element={<Login />} />
               <Route path="/" element={<PrivateRoute>
                 <Hompepage />
+              </PrivateRoute>} />
+              <Route path="/user-details" element={<PrivateRoute>
+                <UserDetailsPage />
               </PrivateRoute>} />
               <Route path="/admin" element={<PrivateRoute role={SecurityRole.ADMIN}>
                 <AdminEditPage />

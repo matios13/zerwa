@@ -4,7 +4,8 @@ import {
     signOut as logout,
     User
 } from "firebase/auth";
-import { collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import _ from "lodash";
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
 import { LoadingComponent } from "../components/LoadingComponent";
 import { UserData } from "../models/UserData";
@@ -16,10 +17,11 @@ type AuthContextType = {
     user: User | null,
     userData?: UserData
     signInWithGoogle: () => void,
-    signOut: () => void
+    signOut: () => void,
+    updateUserData: (userData: UserData) => Promise<void>
 
 }
-const AuthContext = createContext<AuthContextType>({ user: null, signInWithGoogle: () => { }, signOut: () => { } });
+const AuthContext = createContext<AuthContextType>({ user: null, signInWithGoogle: () => { }, signOut: () => { }, updateUserData: () => Promise.reject() });
 
 export const useAuth = () => {
     return useContext(AuthContext);
@@ -34,6 +36,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     const [isLoading, setLoading] = useState(true);
     const googleProvider = new GoogleAuthProvider();
     const db = getFirestore(firebaseApp);
+    const users = collection(db, "users")
 
     useEffect(() => {
         const unsubscribe = getAuth().onAuthStateChanged(user => {
@@ -43,12 +46,14 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         // Cleanup subscription on unmount
         return () => unsubscribe();
     }, []);
+
     useEffect(() => {
         if (user) {
             getOrCreateuserData()
         }
         // eslint-disable-next-line
     }, [user])
+
     useEffect(() => {
         if (isLoading) {
             logEvent(analytics, "login")
@@ -58,17 +63,29 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     const signInWithGoogle = async () => {
         signInWithPopup(getAuth(firebaseApp), googleProvider);
     };
+
+    const updateUserData = async (userData: UserData): Promise<void> => {
+        if (user) {
+            const docRef = doc(users, user.uid).withConverter(new FirebaseConverter<UserData>())
+            await updateDoc(docRef, _.omit(userData, ['security_role']))
+            setUserData(userData)
+            return Promise.resolve()
+        } else {
+            return Promise.reject("there is no current user in session")
+        }
+    }
+
     async function getOrCreateuserData() {
         try {
             if (user) {
-                const users = collection(db, "users")
                 const docRef = doc(users, user.uid).withConverter(new FirebaseConverter<UserData>())
                 var userData = (await getDoc(docRef)).data();
                 if (!userData) {
-                    userData = new UserData(user.uid, user.displayName, user.email)
-                    await setDoc(docRef, userData);
+                    await updateUserData(new UserData(user.uid, user.displayName, user.email))
+                } else {
+                    setUserData(userData)
                 }
-                setUserData(userData)
+
             }
         }
         catch (err: any) {
@@ -79,7 +96,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         logout(getAuth(firebaseApp));
     };
     return (
-        <AuthContext.Provider value={{ user, userData, signInWithGoogle, signOut }}>
+        <AuthContext.Provider value={{ user, userData, signInWithGoogle, signOut, updateUserData }}>
             {!isLoading && children}
             {isLoading && <LoadingComponent message="Ładowanie" />}
         </AuthContext.Provider>
