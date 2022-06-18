@@ -1,7 +1,6 @@
 import { Box, Button, Grid, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppBarComponent } from '../../components/AppBar/AppBarComponent';
 import { LoadingComponent } from '../../components/LoadingComponent';
 import { useAuth } from "../../firebase/firebaseAuth";
 import { Sex } from '../../models/UserData';
@@ -24,7 +23,6 @@ export const UserDetailsPage: FC = () => {
     }
 
     useEffect(() => {
-        console.log("new user data")
         setData(userData)
     }, [userData])
 
@@ -40,7 +38,6 @@ export const UserDetailsPage: FC = () => {
     if (data) {
         return (
             <>
-                <AppBarComponent />
                 <Box component="form" sx={{ display: "flex", alignItems: "center", flexDirection: "column", }}>
                     <Typography align="center" variant="h3" >Twoje dane</Typography>
                     <Grid container spacing={2} justifyItems="center" justifyContent="center" alignItems="center" sx={{
@@ -67,7 +64,7 @@ export const UserDetailsPage: FC = () => {
                                 onChange={handleBirthYearChange}
                                 inputProps={{
                                     type: 'number',
-                                    min: 1900,
+                                    min: 0,
                                     max: new Date().getFullYear(),
                                     step: 1,
                                     maxLength: 4,

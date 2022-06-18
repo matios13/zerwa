@@ -1,12 +1,14 @@
 import { Menu, MenuItem, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
+import { LoadingComponent } from "../../../components/LoadingComponent";
 import { RoutesGrid } from "../../../components/Routes/RoutesGrid";
 import { useAuth } from "../../../firebase/firebaseAuth";
 import { ClimbingEvent, getDifficultyFor } from "../../../models/ClimbingEvent";
 import { getAllUserRouteStatus, UserClimbingEvent, UserClimbingRoute, UserRouteStatus } from "../../../models/UserClimbingEvent";
 import { createNewUserEvent, findUserEventWithId, updateUserEvent } from "../../../services/events/UserEventService";
 import { dateAsString } from "../../../services/time/TimeService";
+import { UserEventDetailsComponent } from "./UserEventDetailsComponent";
 import { UserEventStatisticComponent } from "./UserEventStatisticComponent";
 type Props = {
     event: ClimbingEvent
@@ -76,6 +78,13 @@ export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
             handleClose()
         }
     }
+    const handleUpdateUserEvent = (userEvent: UserClimbingEvent) => {
+        if (user) {
+            updateUserEvent(userEvent, user.uid)
+            setUserClimbingEvent(userEvent)
+        }
+    }
+
     const getColorForId = (id: number): string => {
         if (userClimbingEvent) {
             const foundRoute = userClimbingEvent.climbingRoutes.find(r => r.id === id)
@@ -109,11 +118,16 @@ export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
             </Menu>
             <Typography align="center" variant="h3" m={1} >{event.name}</Typography>
             <Box sx={{ display: "flex", justifyContent: "space-around", mb: 2, mt: 2 }}>
-                <Typography>Data rozpoczęcia : <br /> {dateAsString(event.startDate)}</Typography>
-                <Typography>Data zakończenia : <br /> {dateAsString(event.endDate)} </Typography>
+                <Typography>{dateAsString(event.startDate)} - {dateAsString(event.endDate)}</Typography>
             </Box>
-            {userClimbingEvent && <UserEventStatisticComponent event={event} userEvent={userClimbingEvent} />}
-            <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} getColorForId={getColorForId} addNewRouteButton={false} />
+            {userClimbingEvent &&
+                <>
+                    <UserEventDetailsComponent userEvent={userClimbingEvent} handleUpdate={handleUpdateUserEvent} />
+                    <UserEventStatisticComponent event={event} userEvent={userClimbingEvent} />
+                    <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} getColorForId={getColorForId} addNewRouteButton={false} />
+                </>}
+            {!userClimbingEvent && <LoadingComponent message="Ładowanie" />}
+
 
         </Box>)
 }

@@ -4,6 +4,12 @@ export enum UserRouteStatus {
     LATER = "LATER",
     NEVER = "NEVER",
 }
+
+export enum DifficvultyCategory {
+    LIGHT = "LIGHT",
+    PRO = "PRO",
+}
+
 type StatusLabelAndColour = {
     status: UserRouteStatus,
     label: string,
@@ -44,5 +50,8 @@ export class UserClimbingEvent {
         public eventId: string,
         public climbingRoutes: UserClimbingRoute[] = [],
         public sumOfPoints: number = 0,
+        public category: DifficvultyCategory = DifficvultyCategory.LIGHT,
+        public isSection: boolean = false,
+        public section?: string
     ) { }
 }
