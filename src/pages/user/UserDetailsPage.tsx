@@ -1,5 +1,5 @@
 import { Box, Button, Grid, MenuItem, Select, TextField, Typography } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoadingComponent } from '../../components/LoadingComponent';
 import { useAuth } from "../../firebase/firebaseAuth";
@@ -26,7 +26,7 @@ export const UserDetailsPage: FC = () => {
         setData(userData)
     }, [userData])
 
-    const handleBirthYearChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleBirthYearChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (e.target.validationMessage) {
             setError(e.target.validationMessage)
         } else if (data) {
