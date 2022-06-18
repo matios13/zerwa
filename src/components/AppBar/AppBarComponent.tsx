@@ -1,5 +1,4 @@
 import { AccountCircle } from "@mui/icons-material";
-import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Avatar, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
