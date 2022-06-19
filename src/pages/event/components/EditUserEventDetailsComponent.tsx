@@ -10,9 +10,19 @@ type Props = {
 export const EditUserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpdate }) => {
 
     const [newUserEvent, setNewUserEvent] = useState(userEvent)
+    const [error, setError] = useState<String>()
     useEffect(() => {
         setNewUserEvent(userEvent)
     }, [userEvent])
+
+    const handleSectionChange = (section: string)=> {
+        setNewUserEvent({ ...newUserEvent, section})
+        if(section.length<5 && newUserEvent.isSection){
+            setError("Dzień i godzina muszą mieć conajmniej 5 znaków")
+        }else{
+            setError(undefined)
+        }
+    }
     return (
         <Grid container justifyContent="center" justifyItems="center" spacing={2} alignItems="center">
             <Grid xs={6} md={2} item>
@@ -39,17 +49,19 @@ export const EditUserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpda
                     <Box display="flex" justifyContent="center" >
                         <TextField
                             sx={{ width: 300 }}
+                            error={!!error}
+                            helperText={error}
                             label="Dzień i godzina sekcji"
                             id="event-name"
                             value={newUserEvent.section}
-                            onChange={(e) => setNewUserEvent({ ...newUserEvent, section: e.target.value })}
+                            onChange={(e) => handleSectionChange(e.target.value)}
                         />
                     </Box>
                 </Grid>
             )}
             <Grid item xs={12} md={2}>
                 <Box display="flex" justifyContent="center" >
-                    <Button onClick={() => handleUpdate(newUserEvent)}>Zapisz</Button>
+                    <Button disabled={!!error} onClick={() => handleUpdate(newUserEvent)}>Zapisz</Button>
                 </Box>
             </Grid>
         </Grid>

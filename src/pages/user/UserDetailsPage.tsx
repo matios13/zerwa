@@ -27,11 +27,14 @@ export const UserDetailsPage: FC = () => {
     }, [userData])
 
     const handleBirthYearChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        if (e.target.validationMessage) {
-            setError(e.target.validationMessage)
-        } else if (data) {
-            setError(undefined)
-            setData({ ...data, birthYear: parseInt(e.target.value) })
+        if (data) {
+            const birthYear = parseInt(e.target.value)
+            if (e.target.validationMessage || isNaN(birthYear)) {
+                setError(e.target.validationMessage ? e.target.validationMessage : "Niepoprawny rok urodzenia")
+            } else {
+                setError(undefined)
+            }
+            setData({ ...data, birthYear })
         }
     }
 
@@ -64,7 +67,7 @@ export const UserDetailsPage: FC = () => {
                                 onChange={handleBirthYearChange}
                                 inputProps={{
                                     type: 'number',
-                                    min: 0,
+                                    min: 1900,
                                     max: new Date().getFullYear(),
                                     step: 1,
                                     maxLength: 4,

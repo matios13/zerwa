@@ -116,7 +116,7 @@ export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
                     getAllUserRouteStatus().map(status => <MenuItem key={"status-" + status.status} sx={{ backgroundColor: status.color }} onClick={() => setStatusOnRoute(status.status)}>{status.label}</MenuItem>)
                 }
             </Menu>
-            <Typography align="center" variant="h3" m={1} >{event.name}</Typography>
+            <Typography align="center" variant="h6" m={1} >{event.name}</Typography>
             <Box sx={{ display: "flex", justifyContent: "space-around", mb: 2, mt: 2 }}>
                 <Typography>{dateAsString(event.startDate)} - {dateAsString(event.endDate)}</Typography>
             </Box>

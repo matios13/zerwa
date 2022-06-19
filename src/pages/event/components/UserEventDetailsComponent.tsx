@@ -29,24 +29,33 @@ export const UserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpdate }
             </Grid>)
     }
     return (
-        <Box display="flex" flexDirection="column" alignContent="center">
-            <Typography align="center" variant="h6">Twoje dane:</Typography>
-            <Typography align="center" m={2}>{userData.name}   {userData.birthYear ? userData.birthYear : "brak roku urodzin"}   {getSexAsLetter(userData.sex)}</Typography>
+        <>
             <Collapse in={!editingMode}>
-                <Grid container justifyContent="center" alignItems="center">
-                    <Grid item>
-                        <Typography align="center">Kategoria:  {userEvent.category} Sekcja:  {userEvent.isSection ? "TAK: " + userEvent.section : "NIE"}</Typography>
-                    </Grid>
-                    <Grid item>
-                        <Button onClick={() => setEditingMode(true)}>Edytuj</Button>
-                    </Grid>
-                </Grid>
+                <Box display="flex" alignContent="center">
+                    <Box>
+                        <Typography align="center" mb={1} fontWeight={800}>Twoje dane:</Typography>
+                        <Typography align="center" mb={2}>{userData.name}   {userData.birthYear ? userData.birthYear : "brak roku urodzin"}   {getSexAsLetter(userData.sex)}</Typography>
+                    </Box>
+                    <Box>
+                        <Typography align="center" mb={1} fontWeight={800}>Kategoria: </Typography>
+                        <Grid container justifyContent="center" alignItems="center">
+                            <Grid item>
+                                <Typography align="center">{userEvent.category} Sekcja:  {userEvent.isSection ? "" + userEvent.section : "NIE"}</Typography>
+                            </Grid>
+                            <Grid item>
+                                <Button onClick={() => setEditingMode(true)}>Edytuj</Button>
+                            </Grid>
+                        </Grid>
+
+                    </Box>
+                </Box>
             </Collapse>
             <Collapse in={editingMode}>
+                <Typography align="center" mb={1} fontWeight={800}>Kategoria: </Typography>
                 <EditUserEventDetailsComponent userEvent={userEvent} handleUpdate={(ue) => {
                     handleUpdate(ue)
                     setEditingMode(false)
                 }} />
             </Collapse>
-        </Box>)
+        </>)
 }
