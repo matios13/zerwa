@@ -31,24 +31,21 @@ export const UserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpdate }
     return (
         <>
             <Collapse in={!editingMode}>
-                <Box display="flex" alignContent="center">
-                    <Box>
+                <Grid container justifyContent="center" alignItems="flex-start">
+                    <Grid item xs={6}>
                         <Typography align="center" mb={1} fontWeight={800}>Twoje dane:</Typography>
-                        <Typography align="center" mb={2}>{userData.name}   {userData.birthYear ? userData.birthYear : "brak roku urodzin"}   {getSexAsLetter(userData.sex)}</Typography>
-                    </Box>
-                    <Box>
+                    </Grid>
+                    <Grid item xs={6}>
                         <Typography align="center" mb={1} fontWeight={800}>Kategoria: </Typography>
-                        <Grid container justifyContent="center" alignItems="center">
-                            <Grid item>
-                                <Typography align="center">{userEvent.category} Sekcja:  {userEvent.isSection ? "" + userEvent.section : "NIE"}</Typography>
-                            </Grid>
-                            <Grid item>
-                                <Button onClick={() => setEditingMode(true)}>Edytuj</Button>
-                            </Grid>
-                        </Grid>
-
-                    </Box>
-                </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography align="center" >{userData.name}   {userData.birthYear ? userData.birthYear : "brak roku urodzin"}   {getSexAsLetter(userData.sex)}</Typography>
+                    </Grid>
+                    <Grid item xs={6} display="flex" flexDirection="column" >
+                        <Typography align="center">{userEvent.category} Sekcja:  {userEvent.isSection ? "" + userEvent.section : "NIE"}</Typography>
+                        <Button onClick={() => setEditingMode(true)}>Edytuj</Button>
+                    </Grid>
+                </Grid>
             </Collapse>
             <Collapse in={editingMode}>
                 <Typography align="center" mb={1} fontWeight={800}>Kategoria: </Typography>
