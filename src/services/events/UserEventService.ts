@@ -1,4 +1,5 @@
 import { collection, doc, DocumentReference, getDoc, getDocs, getFirestore, orderBy, query, setDoc, updateDoc } from "@firebase/firestore"
+import _ from "lodash"
 import { FirebaseConverter } from "../../firebase/firebaseConverter"
 import { UserClimbingEvent } from "../../models/UserClimbingEvent"
 
@@ -39,7 +40,7 @@ export const findUserEventWithId = async (id: string, userId: string): Promise<U
 export const updateUserEvent = async (userClimbingEvent: UserClimbingEvent, uid: string): Promise<void> => {
     const documentRef = getDocumentReference(userClimbingEvent.eventId, uid);
     try {
-        return updateDoc(documentRef, userClimbingEvent)
+        return updateDoc(documentRef, _(userClimbingEvent).omitBy(_.isUndefined).value())
     } catch (e) {
         console.error(e)
         throw new Error(`Wydarzenie o nazwie ${userClimbingEvent.eventId} nie istnieje`);

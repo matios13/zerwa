@@ -11,6 +11,6 @@ const getDocumentReference = (userId: string): DocumentReference<UserData> => do
 
 export const updateUserDataDocument = async (userData: UserData): Promise<void> => {
         const docRef = getDocumentReference(userData.uid)
-        return updateDoc(docRef, _.omit(userData, ['security_role']))
+        return updateDoc(docRef, _(userData).omit(['security_role']).omitBy(_.isUndefined).value())
 }
 
