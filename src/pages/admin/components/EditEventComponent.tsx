@@ -1,14 +1,13 @@
-import { Button, Collapse, Menu, MenuItem, Typography } from "@mui/material";
+import { Button, Menu, MenuItem, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { RoutesGrid } from "../../../components/Routes/RoutesGrid";
 import { ClimbingRoute } from '../../../models/ClimbigRoute';
 import { ClimbingEvent, getDifficultyFor } from "../../../models/ClimbingEvent";
-import { dateAsString } from "../../../services/time/TimeService";
-import { ViewEventResultsComponent } from "./ViewEventResultsComponent";
-import { TransitionGroup } from "react-transition-group";
 import { UserClimbingEvent } from "../../../models/UserClimbingEvent";
 import { getAllUserEvents } from "../../../services/events/UserEventService";
+import { dateAsString } from "../../../services/time/TimeService";
+import { ViewEventResultsComponent } from "./ViewEventResultsComponent";
 
 type Props = {
     event: ClimbingEvent
@@ -27,7 +26,7 @@ export const EditEventComponent: React.FC<Props> = ({ event, updateRoute }) => {
     const [climbingEvents, setClimbingEvents] = useState<UserClimbingEvent[]>()
 
     useEffect(() => {
-        getAllUserEvents(event.name).then(setClimbingEvents)
+        getAllUserEvents(event.name).then(setClimbingEvents) 
     }, [])
 
 
@@ -85,7 +84,7 @@ export const EditEventComponent: React.FC<Props> = ({ event, updateRoute }) => {
                 <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} addNewRouteButton={true} />
             }
             {!isEditing && climbingEvents &&
-                <ViewEventResultsComponent event={event} climbingEvents={climbingEvents}/>
+                <ViewEventResultsComponent event={event} climbingEvents={climbingEvents} />
             }
 
         </Box>)

@@ -12,7 +12,6 @@ const PrivateRoute: React.FC<Props> = (props) => {
     } else if (!userData) {
         return <LoadingComponent message="Ładowanie" />;
     } else if (props.role && userData?.security_role !== props.role) {
-        console.log("move to / user " + userData);
         return <Navigate to="/" replace />;
     }
     return <>{props.children}</>;

@@ -12,6 +12,7 @@ import { createNewUserEvent, findUserEventWithId, updateUserEvent } from "../../
 import { dateAsString } from "../../../services/time/TimeService";
 import { UserEventDetailsComponent } from "./UserEventDetailsComponent";
 import { UserEventStatisticComponent } from "./UserEventStatisticComponent";
+
 type Props = {
     event: ClimbingEvent
 }
@@ -54,6 +55,7 @@ export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
                 addUserDetailsToEventIfDifferent(userData, userClimbingEvent)
             }
         }
+        // eslint-disable-next-line
     }, [event, user, userData, userClimbingEvent]);
 
     const addEventToUserListIfNotExists = (eventId: string, userData: UserData) => {
