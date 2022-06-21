@@ -1,5 +1,5 @@
 import { Box, Button, Grid, MenuItem, Select, TextField, Typography } from "@mui/material";
-import { FC, useEffect, useState, ChangeEvent } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoadingComponent } from '../../components/LoadingComponent';
 import { useAuth } from "../../firebase/firebaseAuth";
@@ -16,7 +16,7 @@ export const UserDetailsPage: FC = () => {
     const saveIfValuesAreNotEmpty = () => {
         if (data?.name && data?.birthYear && data?.sex) {
             setSaving(true)
-            updateUserData(data).then(() => setSaving(false)).then(() => navigate("/"))
+            updateUserData(data,).then(() => setSaving(false)).then(() => navigate("/"))
         } else {
             setError("Wypełnij wszystkie pola")
         }
@@ -79,7 +79,7 @@ export const UserDetailsPage: FC = () => {
                                 error={!!error && !data.sex}
                                 label="Płeć"
                                 id="user-sex"
-                                value={data.sex}
+                                value={data.sex || null}
                                 onChange={(e) => setData({ ...data, sex: (e.target.value as Sex) })}
                             >
                                 <MenuItem value={Sex.MALE}>Mężczyzna</MenuItem>

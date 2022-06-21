@@ -4,11 +4,11 @@ import {
     signOut as logout,
     User
 } from "firebase/auth";
-import { collection, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
-import _ from "lodash";
+import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
 import { LoadingComponent } from "../components/LoadingComponent";
 import { UserData } from "../models/UserData";
+import { updateUserDataDocument } from "../services/events/UserDataEventService";
 import { analytics, firebaseApp } from "./firebase";
 import { FirebaseConverter } from "./firebaseConverter";
 
@@ -22,6 +22,7 @@ type AuthContextType = {
 
 }
 const AuthContext = createContext<AuthContextType>({ user: null, signInWithGoogle: () => { }, signOut: () => { }, updateUserData: () => Promise.reject() });
+
 
 export const useAuth = () => {
     return useContext(AuthContext);
@@ -66,22 +67,18 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
     const updateUserData = async (userData: UserData): Promise<void> => {
         if (user) {
-            const docRef = doc(users, user.uid).withConverter(new FirebaseConverter<UserData>())
-            await updateDoc(docRef, _.omit(userData, ['security_role']))
-            setUserData(userData)
-            return Promise.resolve()
+            return updateUserDataDocument(userData).then(() => setUserData(userData))
         } else {
             return Promise.reject("there is no current user in session")
         }
     }
-
     async function getOrCreateuserData() {
         try {
             if (user) {
                 const docRef = doc(users, user.uid).withConverter(new FirebaseConverter<UserData>())
                 var userData = (await getDoc(docRef)).data();
                 if (!userData) {
-                    await updateUserData(new UserData(user.uid, user.displayName, user.email))
+                    await updateUserData(new UserData(user.uid, user.displayName || undefined, user.email || undefined))
                 } else {
                     setUserData(userData)
                 }

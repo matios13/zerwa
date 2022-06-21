@@ -11,18 +11,22 @@ export const EditUserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpda
 
     const [newUserEvent, setNewUserEvent] = useState(userEvent)
     const [error, setError] = useState<String>()
+
     useEffect(() => {
-        setNewUserEvent(userEvent)
+        if (!userEvent.category) {
+            setNewUserEvent({ ...userEvent, category: DifficvultyCategory.LIGHT })
+        }
     }, [userEvent])
 
-    const handleSectionChange = (section: string)=> {
-        setNewUserEvent({ ...newUserEvent, section})
-        if(section.length<5 && newUserEvent.isSection){
+
+    useEffect(() => {
+        if (isUndefinedOrToShort(newUserEvent.section) && newUserEvent.isSection) {
             setError("Dzień i godzina muszą mieć conajmniej 5 znaków")
-        }else{
+        } else {
             setError(undefined)
         }
-    }
+    }, [newUserEvent])
+
     return (
         <Grid container justifyContent="center" justifyItems="center" spacing={2} alignItems="center">
             <Grid xs={6} md={2} item>
@@ -30,7 +34,7 @@ export const EditUserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpda
                     <Select
                         label="Kategoria"
                         id="user-event-category"
-                        value={userEvent.category}
+                        value={newUserEvent.category || DifficvultyCategory.LIGHT}
                         onChange={(e) => setNewUserEvent({ ...newUserEvent, category: (e.target.value as DifficvultyCategory) })}
                     >
                         <MenuItem value={DifficvultyCategory.LIGHT}>LIGHT</MenuItem>
@@ -54,16 +58,20 @@ export const EditUserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpda
                             label="Dzień i godzina sekcji"
                             id="event-name"
                             value={newUserEvent.section}
-                            onChange={(e) => handleSectionChange(e.target.value)}
+                            onChange={(e) => setNewUserEvent({ ...newUserEvent, section: e.target.value })}
                         />
                     </Box>
                 </Grid>
             )}
             <Grid item xs={12} md={2}>
                 <Box display="flex" justifyContent="center" >
-                    <Button disabled={!!error} onClick={() => handleUpdate(newUserEvent)}>Zapisz</Button>
+                    <Button disabled={!!error && newUserEvent.isSection} onClick={() => handleUpdate(newUserEvent)}>Zapisz</Button>
                 </Box>
             </Grid>
         </Grid>
     )
+}
+
+const isUndefinedOrToShort = (s: string | undefined): boolean => {
+    return !s || s.length < 5;
 }

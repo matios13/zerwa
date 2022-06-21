@@ -1,10 +1,14 @@
-import { Menu, MenuItem, Typography } from "@mui/material";
+import { Button, Collapse, Menu, MenuItem, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RoutesGrid } from "../../../components/Routes/RoutesGrid";
 import { ClimbingRoute } from '../../../models/ClimbigRoute';
 import { ClimbingEvent, getDifficultyFor } from "../../../models/ClimbingEvent";
 import { dateAsString } from "../../../services/time/TimeService";
+import { ViewEventResultsComponent } from "./ViewEventResultsComponent";
+import { TransitionGroup } from "react-transition-group";
+import { UserClimbingEvent } from "../../../models/UserClimbingEvent";
+import { getAllUserEvents } from "../../../services/events/UserEventService";
 
 type Props = {
     event: ClimbingEvent
@@ -19,6 +23,14 @@ export const EditEventComponent: React.FC<Props> = ({ event, updateRoute }) => {
 
     const dificulties = getDifficultyFor(event.type);
     const [anchorAndId, setAnchorAndId] = useState<null | AnchorAndId>(null);
+    const [isEditing, setEditing] = useState(true);
+    const [climbingEvents, setClimbingEvents] = useState<UserClimbingEvent[]>()
+
+    useEffect(() => {
+        getAllUserEvents(event.name).then(setClimbingEvents)
+    }, [])
+
+
     const handleMenu = (htmlEvent: React.MouseEvent<HTMLElement>, routeId?: number) => {
         setAnchorAndId({
             anchor: htmlEvent.currentTarget,
@@ -60,12 +72,21 @@ export const EditEventComponent: React.FC<Props> = ({ event, updateRoute }) => {
             >
                 {dificulties.map(d => <MenuItem key={"dificulty-" + d.difficulty} sx={{ backgroundColor: d.colour ? d.colour : "white" }} onClick={() => updateOrCreateRoute(d.difficulty)}>{d.difficulty}</MenuItem>)}
             </Menu>
-            <Typography align="center" variant="h3" >{event.name}</Typography>
+            <Typography align="center" variant="h6" >{event.name}</Typography>
             <Box sx={{ display: "flex", justifyContent: "space-around", mb: 2 }}>
                 <Typography>Data rozpoczęcia : <br /> {dateAsString(event.startDate)}</Typography>
                 <Typography>Data zakończenia : <br /> {dateAsString(event.endDate)} </Typography>
             </Box>
-            <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} addNewRouteButton={true} />
+            <Box justifyContent="center" display="flex">
+                <Button variant="outlined" onClick={() => setEditing(!isEditing)}>{isEditing ? "Wyniki" : "edycja"}</Button>
+            </Box>
+
+            {isEditing &&
+                <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} addNewRouteButton={true} />
+            }
+            {!isEditing && climbingEvents &&
+                <ViewEventResultsComponent event={event} climbingEvents={climbingEvents}/>
+            }
 
         </Box>)
 }

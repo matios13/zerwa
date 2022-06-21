@@ -19,11 +19,12 @@ export const getSexAsLetter = (sex: Sex | undefined) => {
 export class UserData {
     constructor(
         public uid: string,
-        public name: string | null,
-        public email: string | null,
-        public birthYear?: number | null,
+        public name?: string,
+        public email?: string,
+        public birthYear?: number,
         public sex?: Sex,
-        readonly security_role = SecurityRole.USER,
+        public eventIds: string[] = [],
+        readonly security_role = SecurityRole.USER
     ) { }
 
 }

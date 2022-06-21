@@ -48,9 +48,13 @@ export type UserClimbingRoute = {
 export class UserClimbingEvent {
     constructor(
         public eventId: string,
+        public userId: string,
+        public name?: string,
+        public email?: string,
+        public birthYear?: number,
         public climbingRoutes: UserClimbingRoute[] = [],
         public sumOfPoints: number = 0,
-        public category: DifficvultyCategory = DifficvultyCategory.LIGHT,
+        public category?: DifficvultyCategory,
         public isSection: boolean = false,
         public section?: string
     ) { }

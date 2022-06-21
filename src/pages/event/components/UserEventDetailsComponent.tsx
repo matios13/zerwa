@@ -1,4 +1,4 @@
-import { Box, Button, Collapse, Grid, Typography } from "@mui/material"
+import { Button, Collapse, Grid, Typography } from "@mui/material"
 import { FC, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../../firebase/firebaseAuth"
@@ -13,7 +13,7 @@ type Props = {
 export const UserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpdate }) => {
     const navigate = useNavigate()
     const { userData } = useAuth()
-    const [editingMode, setEditingMode] = useState(false)
+    const [editingMode, setEditingMode] = useState(!userEvent.category)
     if (!userData) {
         return <></>
     }

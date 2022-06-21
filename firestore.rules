@@ -13,11 +13,19 @@ service cloud.firestore {
             allow read: if isAuthenticated()
             allow write: if isAdmin()
         }
+
+        match /climbingEvents/{event}/userEvents/{userId} 
+        {
+            match /{ document=** } {
+            	allow read, write: if isAuthenticated() && userId==request.auth.uid;
+                allow read: if isAdmin();
+            }
+        }
         
         match /users/{userId} {
-        		match /{ document=** } {
-            	allow read, write: if isAuthenticated() && userId==request.auth.uid;
-              allow read: if isAdmin();
+        	match /{ document=** } {
+                allow read, write: if isAuthenticated() && userId==request.auth.uid;
+                allow read: if isAdmin();
             }
             
         }
