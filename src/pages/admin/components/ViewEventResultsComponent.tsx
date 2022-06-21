@@ -30,7 +30,7 @@ export const ViewEventResultsComponent: FC<Props> = ({ event, climbingEvents }) 
                 id: climbingEvent.userId,
                 name: climbingEvent.name || "",
                 email: climbingEvent.email || "",
-                birthYear: climbingEvent.birthYear || 0,
+                birthYear: climbingEvent.birthYear,
                 category: climbingEvent.category?.toString() || "",
                 sex: "K",
                 section: climbingEvent.isSection ? (climbingEvent.section ? climbingEvent.section : "TAK") : "Nie",

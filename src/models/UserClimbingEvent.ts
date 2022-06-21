@@ -51,7 +51,7 @@ export class UserClimbingEvent {
         public userId: string,
         public name?: string,
         public email?: string,
-        public birthYear?: number,
+        public birthYear: number = 0,
         public climbingRoutes: UserClimbingRoute[] = [],
         public sumOfPoints: number = 0,
         public category?: DifficvultyCategory,

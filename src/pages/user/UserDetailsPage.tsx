@@ -14,7 +14,7 @@ export const UserDetailsPage: FC = () => {
     const [error, setError] = useState<string>()
 
     const saveIfValuesAreNotEmpty = () => {
-        if (data?.name && data?.birthYear && data?.sex) {
+        if (data?.name && data?.birthYear > 0 && data?.sex) {
             setSaving(true)
             updateUserData(data,).then(() => setSaving(false)).then(() => navigate("/"))
         } else {

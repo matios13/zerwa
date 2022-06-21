@@ -21,7 +21,7 @@ export class UserData {
         public uid: string,
         public name?: string,
         public email?: string,
-        public birthYear?: number,
+        public birthYear: number = 0,
         public sex?: Sex,
         public eventIds: string[] = [],
         readonly security_role = SecurityRole.USER

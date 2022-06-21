@@ -17,7 +17,7 @@ export const UserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpdate }
     if (!userData) {
         return <></>
     }
-    if (userData && (!userData.birthYear || !userData.name || !userData.sex)) {
+    if (userData && (userData.birthYear === 0 || !userData.name || !userData.sex)) {
         return (
             <Grid container justifyContent="center" alignItems="center">
                 <Grid item>
@@ -39,7 +39,7 @@ export const UserEventDetailsComponent: FC<Props> = ({ userEvent, handleUpdate }
                         <Typography align="center" mb={1} fontWeight={800}>Kategoria: </Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography align="center" >{userData.name}   {userData.birthYear ? userData.birthYear : "brak roku urodzin"}   {getSexAsLetter(userData.sex)}</Typography>
+                        <Typography align="center" >{userData.name}   {userData.birthYear === 0 ? userData.birthYear : "brak roku urodzin"}   {getSexAsLetter(userData.sex)}</Typography>
                     </Grid>
                     <Grid item xs={6} display="flex" flexDirection="column" >
                         <Typography align="center">{userEvent.category} Sekcja:  {userEvent.isSection ? "" + userEvent.section : "NIE"}</Typography>
