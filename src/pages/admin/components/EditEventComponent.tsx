@@ -27,7 +27,7 @@ export const EditEventComponent: React.FC<Props> = ({ event, updateRoute }) => {
 
     useEffect(() => {
         getAllUserEvents(event.name).then(setClimbingEvents) 
-    }, [])
+    }, [event])
 
 
     const handleMenu = (htmlEvent: React.MouseEvent<HTMLElement>, routeId?: number) => {
