@@ -4,7 +4,7 @@ import {
     signOut as logout,
     User
 } from "firebase/auth";
-import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
+import { collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
 import { LoadingComponent } from "../components/LoadingComponent";
 import { UserData } from "../models/UserData";
@@ -78,7 +78,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
                 const docRef = doc(users, user.uid).withConverter(new FirebaseConverter<UserData>())
                 var userData = (await getDoc(docRef)).data();
                 if (!userData) {
-                    await updateUserData(new UserData(user.uid, user.displayName || undefined, user.email || undefined))
+                    await setDoc(docRef, new UserData(user.uid, user.displayName || undefined, user.email || undefined))
                 } else {
                     setUserData(userData)
                 }
