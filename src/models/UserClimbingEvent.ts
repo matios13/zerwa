@@ -4,6 +4,12 @@ export enum UserRouteStatus {
     LATER = "LATER",
     NEVER = "NEVER",
 }
+
+export enum DifficvultyCategory {
+    LIGHT = "LIGHT",
+    PRO = "PRO",
+}
+
 type StatusLabelAndColour = {
     status: UserRouteStatus,
     label: string,
@@ -42,7 +48,14 @@ export type UserClimbingRoute = {
 export class UserClimbingEvent {
     constructor(
         public eventId: string,
+        public userId: string,
+        public name?: string,
+        public email?: string,
+        public birthYear: number = 0,
         public climbingRoutes: UserClimbingRoute[] = [],
         public sumOfPoints: number = 0,
+        public category?: DifficvultyCategory,
+        public isSection: boolean = false,
+        public section?: string
     ) { }
 }

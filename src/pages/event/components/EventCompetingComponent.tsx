@@ -1,13 +1,18 @@
 import { Menu, MenuItem, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import _ from "lodash";
 import { useEffect, useState } from "react";
+import { LoadingComponent } from "../../../components/LoadingComponent";
 import { RoutesGrid } from "../../../components/Routes/RoutesGrid";
 import { useAuth } from "../../../firebase/firebaseAuth";
 import { ClimbingEvent, getDifficultyFor } from "../../../models/ClimbingEvent";
 import { getAllUserRouteStatus, UserClimbingEvent, UserClimbingRoute, UserRouteStatus } from "../../../models/UserClimbingEvent";
+import { UserData } from "../../../models/UserData";
 import { createNewUserEvent, findUserEventWithId, updateUserEvent } from "../../../services/events/UserEventService";
 import { dateAsString } from "../../../services/time/TimeService";
+import { UserEventDetailsComponent } from "./UserEventDetailsComponent";
 import { UserEventStatisticComponent } from "./UserEventStatisticComponent";
+
 type Props = {
     event: ClimbingEvent
 }
@@ -19,9 +24,10 @@ type AnchorAndId = {
 
 export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
     const dificulties = getDifficultyFor(event.type);
-    const { user } = useAuth()
+    const { user, userData, updateUserData } = useAuth()
     const [userClimbingEvent, setUserClimbingEvent] = useState<UserClimbingEvent>();
     const [anchorAndId, setAnchorAndId] = useState<null | AnchorAndId>(null);
+    const [loading, setLoading] = useState(true);
     const handleMenu = (htmlEvent: React.MouseEvent<HTMLElement>, routeId?: number) => {
         setAnchorAndId({
             anchor: htmlEvent.currentTarget,
@@ -30,20 +36,40 @@ export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
     };
 
     useEffect(() => {
-        if (user && event) {
-            findUserEventWithId(event.name, user.uid).then(
-                (userClimbingEvent) => {
-                    if (userClimbingEvent) {
-                        setUserClimbingEvent(userClimbingEvent);
-                    } else {
-                        var newUserClimbingEvent = new UserClimbingEvent(event.name)
-                        createNewUserEvent(newUserClimbingEvent, user.uid).then(() => setUserClimbingEvent(newUserClimbingEvent));
-                    }
-                }
-            )
+        if (user && event && userData) {
+            if (!userClimbingEvent) {
+                findUserEventWithId(event.name, user.uid)
+                    .then(
+                        (userClimbingEvent) => {
+                            if (userClimbingEvent) {
+                                setUserClimbingEvent(userClimbingEvent)
+                            } else {
+                                const newUserClimbingEvent = new UserClimbingEvent(event.name, user.uid, userData.name, userData.email, userData.birthYear)
+                                createNewUserEvent(newUserClimbingEvent)
+                                    .then(() => setUserClimbingEvent(newUserClimbingEvent))
+                            }
+                        }
+                    ).then(() => setLoading(false))
+            } else {
+                addEventToUserListIfNotExists(event.name, userData)
+                addUserDetailsToEventIfDifferent(userData, userClimbingEvent)
+            }
         }
-    }, [event, user]);
+        // eslint-disable-next-line
+    }, [event, user, userData, userClimbingEvent]);
 
+    const addEventToUserListIfNotExists = (eventId: string, userData: UserData) => {
+        if (!(userData.eventIds && userData.eventIds.includes(eventId))) {
+            const newUserData = _.clone(userData)
+            newUserData.eventIds = _.union(newUserData.eventIds, [event.name])
+            updateUserData(newUserData)
+        }
+    }
+    const addUserDetailsToEventIfDifferent = (userData: UserData, userClimbingEvent: UserClimbingEvent) => {
+        if (userData.name !== userClimbingEvent.name || userData.email !== userClimbingEvent.email || userData.birthYear !== userClimbingEvent.birthYear) {
+            handleUpdateUserEvent({ ...userClimbingEvent, name: userData.name, email: userData.email, birthYear: userData.birthYear })
+        }
+    }
     const handleClose = () => {
         setAnchorAndId(null);
     };
@@ -71,11 +97,17 @@ export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
             const updatedRoute = updateRoutesArray(status);
             const newUserClimbingEvent = { ...userClimbingEvent, climbingRoutes: updatedRoute }
             newUserClimbingEvent.sumOfPoints = recalculateScore(newUserClimbingEvent);
-            updateUserEvent(newUserClimbingEvent, user.uid)
-            setUserClimbingEvent(newUserClimbingEvent)
+            handleUpdateUserEvent(newUserClimbingEvent)
             handleClose()
         }
     }
+    const handleUpdateUserEvent = (userEvent: UserClimbingEvent) => {
+        if (user) {
+            updateUserEvent(userEvent, user.uid)
+            setUserClimbingEvent(userEvent)
+        }
+    }
+
     const getColorForId = (id: number): string => {
         if (userClimbingEvent) {
             const foundRoute = userClimbingEvent.climbingRoutes.find(r => r.id === id)
@@ -107,13 +139,19 @@ export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
                     getAllUserRouteStatus().map(status => <MenuItem key={"status-" + status.status} sx={{ backgroundColor: status.color }} onClick={() => setStatusOnRoute(status.status)}>{status.label}</MenuItem>)
                 }
             </Menu>
-            <Typography align="center" variant="h3" m={1} >{event.name}</Typography>
+
+            <Typography align="center" variant="h6" m={1} >{event.name}</Typography>
             <Box sx={{ display: "flex", justifyContent: "space-around", mb: 2, mt: 2 }}>
-                <Typography>Data rozpoczęcia : <br /> {dateAsString(event.startDate)}</Typography>
-                <Typography>Data zakończenia : <br /> {dateAsString(event.endDate)} </Typography>
+                <Typography>{dateAsString(event.startDate)} - {dateAsString(event.endDate)}</Typography>
             </Box>
-            {userClimbingEvent && <UserEventStatisticComponent event={event} userEvent={userClimbingEvent} />}
-            <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} getColorForId={getColorForId} addNewRouteButton={false} />
+            {userClimbingEvent && !loading &&
+                <>
+                    <UserEventDetailsComponent userEvent={userClimbingEvent} handleUpdate={handleUpdateUserEvent} />
+                    <UserEventStatisticComponent event={event} userEvent={userClimbingEvent} />
+                    <RoutesGrid dificulties={dificulties} routes={event.routes} handleMenu={handleMenu} getColorForId={getColorForId} addNewRouteButton={false} />
+                </>}
+            {(!userClimbingEvent || loading) && <LoadingComponent message="Ładowanie" />}
+
 
         </Box>)
 }

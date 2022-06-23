@@ -1,7 +1,6 @@
 import { Button, MenuItem, Select, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { Fragment, useEffect, useState } from "react"
-import { AppBarComponent } from "../../components/AppBar/AppBarComponent"
 import { ClimbingRoute } from "../../models/ClimbigRoute"
 import { ClimbingEvent } from "../../models/ClimbingEvent"
 import { listAllEvents, updateEvent } from "../../services/events/EventService"
@@ -61,10 +60,9 @@ export const AdminEditPage: React.FC = () => {
             console.error("no selected event")
         }
     }
-    
+
     return (
         <Fragment>
-            <AppBarComponent />
             <Box
                 sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
                 <Typography variant="h2" mb={2}>Wydarzenie</Typography>

@@ -1,9 +1,33 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if
-          request.time < timestamp.date(2022, 6, 30);
+    match /databases/{database}/documents {
+
+        function isAuthenticated(){
+            return request.auth!=null&&request.auth.uid!="";
+        }
+        function isAdmin() {
+            return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.security_role=="ADMIN";
+        }
+
+        match /climbingEvents/{event}{
+            allow read: if isAuthenticated()
+            allow write: if isAdmin()
+        }
+
+        match /climbingEvents/{event}/userEvents/{userId} 
+        {
+            match /{ document=** } {
+            	allow read, write: if isAuthenticated() && userId==request.auth.uid;
+                allow read: if isAdmin();
+            }
+        }
+        
+        match /users/{userId} {
+        	match /{ document=** } {
+                allow read, write: if isAuthenticated() && userId==request.auth.uid;
+                allow read: if isAdmin();
+            }
+            
+        }
     }
-  }
 }

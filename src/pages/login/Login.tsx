@@ -1,21 +1,21 @@
-import { Typography, Paper } from "@mui/material";
+import { logEvent } from "@firebase/analytics";
+import { Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import GoogleButton from 'react-google-button';
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../firebase/firebaseAuth";
-import { logEvent } from "@firebase/analytics";
 import { analytics } from "../../firebase/firebase";
+import { useAuth } from "../../firebase/firebaseAuth";
 
 export const Login = () => {
-    const { user,  signInWithGoogle } = useAuth();
+    const { user, signInWithGoogle } = useAuth();
     const navigate = useNavigate();
-    useEffect(()=>{
-        logEvent(analytics,"page_view")
-    },[]);
+    useEffect(() => {
+        logEvent(analytics, "page_view")
+    }, []);
     useEffect(() => {
         if (user) navigate("/");
-    }, [user,navigate]);
+    }, [user, navigate]);
     return (
         <Box sx={{
             marginTop: 8,
@@ -29,7 +29,7 @@ export const Login = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        m:3
+                        m: 3
                     }}
                 >
                     <Typography component="h1" variant="h5" m={3}>
@@ -37,7 +37,6 @@ export const Login = () => {
                     </Typography>
                     <GoogleButton
                         onClick={() => {
-                            console.log("jolo");
                             signInWithGoogle()
                         }} label="Kontynuuj przez Google" />
                 </Box>
