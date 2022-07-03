@@ -1,7 +1,6 @@
-import { Box, Menu, MenuItem, Typography , Link} from "@mui/material"
+import { Box, Link, Typography } from "@mui/material"
 import { FC } from "react"
 import { ClimbingEvent } from "../../../models/ClimbingEvent"
-import { getAllUserRouteStatus, UserRouteStatus } from "../../../models/UserClimbingEvent"
 import { checkIfDateWasInPast, dateAsString } from "../../../services/time/TimeService"
 
 type Props = {

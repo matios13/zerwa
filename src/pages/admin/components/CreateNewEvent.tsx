@@ -8,9 +8,6 @@ import { DateTime } from "luxon"
 import { useState } from "react"
 import { ClimbingEvent } from "../../../models/ClimbingEvent"
 import { createNewEvent, updateEvent } from "../../../services/events/EventService"
-import { dateFromNumber } from "../../../services/time/TimeService"
-
-
 
 
 type Props = {
