@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from '@mui/x-data-grid';
 import { FC, useEffect, useState } from "react";
@@ -54,7 +55,7 @@ export const ViewEventResultsComponent: FC<Props> = ({ event, climbingEvents }) 
         { field: 'sumOfPoints', headerName: 'Liczba punktów' },
 
     ];
-    if (values.length === 0) return <LoadingComponent message="Pobieranie wyników..." />
+    if (values.length === 0) return <Typography align="center" variant="h6">Brak wyników</Typography>
     return (
         <Box>
 

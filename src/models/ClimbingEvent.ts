@@ -61,6 +61,8 @@ export class ClimbingEvent {
         public startDate: number,
         public endDate: number,
         public routes: Array<ClimbingRoute>,
+        public moreInfoLink?: string,
+        public resultsLink?: string,
         public type: ClimbigEventType= ClimbigEventType.BOULDER,
 
     ) { }
