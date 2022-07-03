@@ -1,4 +1,3 @@
-import { Menu, MenuItem, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import _ from "lodash";
 import { useEffect, useState } from "react";
@@ -9,7 +8,8 @@ import { ClimbingEvent, getDifficultyFor } from "../../../models/ClimbingEvent";
 import { getAllUserRouteStatus, UserClimbingEvent, UserClimbingRoute, UserRouteStatus } from "../../../models/UserClimbingEvent";
 import { UserData } from "../../../models/UserData";
 import { createNewUserEvent, findUserEventWithId, updateUserEvent } from "../../../services/events/UserEventService";
-import { dateAsString } from "../../../services/time/TimeService";
+import { EventResultComponent } from "./EventInfoComponent";
+import { EventRouteSelectMenu } from "./EventRouteSelectMenu";
 import { UserEventDetailsComponent } from "./UserEventDetailsComponent";
 import { UserEventStatisticComponent } from "./UserEventStatisticComponent";
 
@@ -120,30 +120,9 @@ export const EventCompetingComponent: React.FC<Props> = ({ event }) => {
 
     return (
         <Box width="80%" >
-            <Menu
-                id="menu-appbar"
-                anchorEl={anchorAndId?.anchor}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                open={Boolean(anchorAndId)}
-                onClose={handleClose}
-            >
-                {
-                    getAllUserRouteStatus().map(status => <MenuItem key={"status-" + status.status} sx={{ backgroundColor: status.color }} onClick={() => setStatusOnRoute(status.status)}>{status.label}</MenuItem>)
-                }
-            </Menu>
-
-            <Typography align="center" variant="h6" m={1} >{event.name}</Typography>
-            <Box sx={{ display: "flex", justifyContent: "space-around", mb: 2, mt: 2 }}>
-                <Typography>{dateAsString(event.startDate)} - {dateAsString(event.endDate)}</Typography>
-            </Box>
+            <EventResultComponent event={event} menuElement={
+                <EventRouteSelectMenu anchor={anchorAndId?.anchor} handleClose={handleClose} setStatusOnRoute={setStatusOnRoute} />
+            } />
             {userClimbingEvent && !loading &&
                 <>
                     <UserEventDetailsComponent userEvent={userClimbingEvent} handleUpdate={handleUpdateUserEvent} />
