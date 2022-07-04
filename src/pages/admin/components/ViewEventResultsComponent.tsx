@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { Box, maxWidth } from "@mui/system";
+import { Box } from "@mui/system";
 import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from '@mui/x-data-grid';
 import { FC, useEffect, useState } from "react";
 import { LoadingComponent } from "../../../components/LoadingComponent";

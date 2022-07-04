@@ -68,7 +68,7 @@ export const AdminEditPage: React.FC = () => {
     const refreshEvent = () => {
         if (selectedEventIndex !== undefined) {
             setIsLoading(true)
-            var name = events[selectedEventIndex].name;
+            const name = events[selectedEventIndex].name;
             findEventWithName(name).then(event => {
                 if (event) {
                     setEvents(events.map((e, i) => {
