@@ -3,19 +3,21 @@ import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { Box } from "@mui/system"
 import { DatePicker } from "@mui/x-date-pickers"
+import { isNumber } from "lodash"
+import { DateTime } from "luxon"
 import { useState } from "react"
 import { ClimbingEvent } from "../../../models/ClimbingEvent"
-import { createNewEvent } from "../../../services/events/EventService"
-
-
+import { createNewEvent, updateEvent } from "../../../services/events/EventService"
 
 
 type Props = {
-    handleSaveNewEvent: (name: string) => void
+    handleSaveNewEvent: (name: string) => void,
+    updateMode: boolean,
+    event?: ClimbingEvent
 }
-export const CreateNewEvent: React.FC<Props> = ({ handleSaveNewEvent }) => {
+export const CreateNewEvent: React.FC<Props> = ({ handleSaveNewEvent, updateMode, event }) => {
 
-    const [climbingEvent, setClimbingEvent] = useState(new ClimbingEvent("", Date.now(), Date.now(), []))
+    const [climbingEvent, setClimbingEvent] = useState(event || new ClimbingEvent("", Date.now(), Date.now(), []))
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState<string>()
     const isNameToShort = () => {
@@ -26,36 +28,48 @@ export const CreateNewEvent: React.FC<Props> = ({ handleSaveNewEvent }) => {
         setError(undefined)
         if (!isNameToShort() && climbingEvent.startDate && climbingEvent.endDate) {
             setSaving(true)
-            createNewEvent(climbingEvent).then(() => {
-                setSaving(false)
-                handleSaveNewEvent(climbingEvent.name)
-            }).catch(error => {
-                setError(error.message)
-            });
+            if (updateMode) {
+                updateEvent(climbingEvent).then(() => {
+                    setSaving(false)
+                    handleSaveNewEvent(climbingEvent.name)
+                }).catch(error => {
+                    setError(error.message)
+                })
+            } else {
+                createNewEvent(climbingEvent).then(() => {
+                    setSaving(false)
+                    handleSaveNewEvent(climbingEvent.name)
+                }).catch(error => {
+                    setError(error.message)
+                });
+            }
         }
         else {
             setError("Nazwa musi mieć conajmniej 3 znaki a daty muszą być wybrane")
         }
     }
+
     return (
         <Box component="form" sx={{ display: "flex", alignItems: "center", flexDirection: "column", }}>
             <Grid container spacing={2} justifyContent="center" alignItems="center" direction={largeScreen ? "row" : "column"} sx={{
                 '& .MuiTextField-root': { m: 2, width: 300 },
             }}>
-                <Grid item xs={8} md={4} justifyContent="center" alignItems="center" >
-                    <TextField
-                        error={isNameToShort()}
-                        label="Nazwa"
-                        id="event-name"
-                        value={climbingEvent.name}
-                        helperText={isNameToShort() ? "Nazwa musi mieć conajmniej 3 znaki" : ""}
-                        onChange={(e) => setClimbingEvent({ ...climbingEvent, name: e.target.value })}
-                    />
-                </Grid>
+                {!updateMode &&
+                    <Grid item xs={8} md={4} justifyContent="center" alignItems="center" >
+                        <TextField
+                            error={isNameToShort()}
+                            label="Nazwa"
+                            id="event-name"
+                            value={climbingEvent.name}
+                            helperText={isNameToShort() ? "Nazwa musi mieć conajmniej 3 znaki" : ""}
+                            onChange={(e) => setClimbingEvent({ ...climbingEvent, name: e.target.value })}
+                        />
+                    </Grid>
+                }
                 <Grid item xs={8} md={4}>
                     <DatePicker
                         label="Data rozpoczęcia"
-                        value={climbingEvent.startDate}
+                        value={toDate(climbingEvent.startDate)}
                         inputFormat="dd.MM.yyyy"
                         onChange={(date) => {
                             if (date) setClimbingEvent({ ...climbingEvent, startDate: date })
@@ -66,12 +80,30 @@ export const CreateNewEvent: React.FC<Props> = ({ handleSaveNewEvent }) => {
                 <Grid item xs={8} md={4}>
                     <DatePicker
                         label="Data zakończenia"
-                        value={climbingEvent.endDate}
+                        value={toDate(climbingEvent.endDate)}
                         inputFormat="dd.MM.yyyy"
                         onChange={(date) => {
                             if (date) setClimbingEvent({ ...climbingEvent, endDate: date })
                         }}
                         renderInput={(params) => <TextField {...params} />}
+                    />
+                </Grid>
+                <Grid item xs={8} md={4} justifyContent="center" alignItems="center" >
+                    <TextField
+                        label="Link do informacji"
+                        id="event-info-link"
+                        type={"url"}
+                        value={climbingEvent.moreInfoLink}
+                        onChange={(e) => setClimbingEvent({ ...climbingEvent, moreInfoLink: e.target.value })}
+                    />
+                </Grid>
+                <Grid item xs={8} md={4} justifyContent="center" alignItems="center" >
+                    <TextField
+                        label="Link do wyników"
+                        id="event-results-link"
+                        type={"url"}
+                        value={climbingEvent.resultsLink}
+                        onChange={(e) => setClimbingEvent({ ...climbingEvent, resultsLink: e.target.value })}
                     />
                 </Grid>
             </Grid>
@@ -82,3 +114,5 @@ export const CreateNewEvent: React.FC<Props> = ({ handleSaveNewEvent }) => {
         </Box>
     )
 }
+
+const toDate = (date: number | DateTime | undefined): any => isNumber(date) ? DateTime.fromMillis(date) : date

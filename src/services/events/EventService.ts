@@ -9,7 +9,7 @@ export const listAllEvents = async (): Promise<ClimbingEvent[]> => {
     var documents = await getDocs(query(climbingEvents, orderBy("startDate", "desc")))
     return documents.docs.map(document => document.data())
 }
-const findEventWithName = async (name: string): Promise<ClimbingEvent | null> => {
+export const findEventWithName = async (name: string): Promise<ClimbingEvent | null> => {
     const documentRef = doc(climbingEvents, name);
     const document = await getDoc(documentRef);
     if (document.exists()) {

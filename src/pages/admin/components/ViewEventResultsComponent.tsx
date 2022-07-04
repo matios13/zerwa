@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from '@mui/x-data-grid';
 import { FC, useEffect, useState } from "react";
@@ -41,20 +42,21 @@ export const ViewEventResultsComponent: FC<Props> = ({ event, climbingEvents }) 
     }, [climbingEvents])
     if (climbingEvents === undefined) return <LoadingComponent message="Pobieranie wyników..." />
     const columns: GridColDef[] = [
-        { field: 'name', headerName: 'Imię i nazwisko' },
-        { field: 'email', headerName: 'E-mail' },
-        { field: 'birthYear', headerName: 'Rok', type: 'number' },
+        { field: 'name', headerName: 'Imię i nazwisko', maxWidth: 300, minWidth: 150, flex: 1 },
+        { field: 'email', headerName: 'E-mail', flex: 1 },
+        { field: 'birthYear', headerName: 'Rok', type: 'number', flex: 1, maxWidth: 60 },
         {
             field: 'sex',
             headerName: 'Płeć',
-            valueGetter: (params: GridValueGetterParams) => params.row.sex === Sex.FEMALE ? 'K' : 'M'
+            valueGetter: (params: GridValueGetterParams) => params.row.sex === Sex.FEMALE ? 'K' : 'M',
+            flex: 1, maxWidth: 60
         },
-        { field: 'category', headerName: 'Kategoria' },
-        { field: 'section', headerName: 'Sekcja' },
-        { field: 'sumOfPoints', headerName: 'Liczba punktów' },
+        { field: 'category', headerName: 'Kategoria', flex: 1, maxWidth: 80 },
+        { field: 'section', headerName: 'Sekcja', flex: 1, maxWidth: 150 },
+        { field: 'sumOfPoints', headerName: 'Punkty', flex: 1, maxWidth: 80 },
 
     ];
-    if (values.length === 0) return <LoadingComponent message="Pobieranie wyników..." />
+    if (values.length === 0) return <Typography align="center" variant="h6">Brak wyników</Typography>
     return (
         <Box>
 

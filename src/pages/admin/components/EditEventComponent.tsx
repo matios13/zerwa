@@ -1,4 +1,4 @@
-import { Button, Menu, MenuItem, Typography } from "@mui/material";
+import { Button, Menu, MenuItem } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { RoutesGrid } from "../../../components/Routes/RoutesGrid";
@@ -6,30 +6,41 @@ import { ClimbingRoute } from '../../../models/ClimbigRoute';
 import { ClimbingEvent, getDifficultyFor } from "../../../models/ClimbingEvent";
 import { UserClimbingEvent } from "../../../models/UserClimbingEvent";
 import { getAllUserEvents } from "../../../services/events/UserEventService";
-import { dateAsString } from "../../../services/time/TimeService";
+import { EventInfoComponent } from "./EventInfoComponent";
 import { ViewEventResultsComponent } from "./ViewEventResultsComponent";
 
 type Props = {
     event: ClimbingEvent
-    updateRoute: (route: ClimbingRoute) => void
+    updateRoute: (route: ClimbingRoute) => void,
+    refreshEvent: () => void
 }
 
 type AnchorAndId = {
     anchor: HTMLElement,
     id: number
 }
-export const EditEventComponent: React.FC<Props> = ({ event, updateRoute }) => {
+export const EditEventComponent: React.FC<Props> = ({ event, updateRoute, refreshEvent }) => {
 
     const dificulties = getDifficultyFor(event.type);
     const [anchorAndId, setAnchorAndId] = useState<null | AnchorAndId>(null);
     const [isEditing, setEditing] = useState(true);
     const [climbingEvents, setClimbingEvents] = useState<UserClimbingEvent[]>()
 
+
     useEffect(() => {
-        getAllUserEvents(event.name).then(setClimbingEvents) 
+        setClimbingEvents(undefined)
     }, [event])
 
-
+    const handleEditChange = () => {
+        if (isEditing) {
+            setEditing(false)
+            if (!climbingEvents) {
+                getAllUserEvents(event.name).then(setClimbingEvents)
+            }
+        } else {
+            setEditing(true)
+        }
+    }
     const handleMenu = (htmlEvent: React.MouseEvent<HTMLElement>, routeId?: number) => {
         setAnchorAndId({
             anchor: htmlEvent.currentTarget,
@@ -51,7 +62,7 @@ export const EditEventComponent: React.FC<Props> = ({ event, updateRoute }) => {
         }
 
     }
-    //TODO edycja dat i nazwy
+
     return (
         <Box width="80%" >
             <Menu
@@ -71,13 +82,9 @@ export const EditEventComponent: React.FC<Props> = ({ event, updateRoute }) => {
             >
                 {dificulties.map(d => <MenuItem key={"dificulty-" + d.difficulty} sx={{ backgroundColor: d.colour ? d.colour : "white" }} onClick={() => updateOrCreateRoute(d.difficulty)}>{d.difficulty}</MenuItem>)}
             </Menu>
-            <Typography align="center" variant="h6" >{event.name}</Typography>
-            <Box sx={{ display: "flex", justifyContent: "space-around", mb: 2 }}>
-                <Typography>Data rozpoczęcia : <br /> {dateAsString(event.startDate)}</Typography>
-                <Typography>Data zakończenia : <br /> {dateAsString(event.endDate)} </Typography>
-            </Box>
-            <Box justifyContent="center" display="flex">
-                <Button variant="outlined" onClick={() => setEditing(!isEditing)}>{isEditing ? "Wyniki" : "edycja"}</Button>
+            <EventInfoComponent event={event} refreshEvent={refreshEvent} />
+            <Box justifyContent="center" display="flex" mb={1}>
+                <Button variant="outlined" onClick={handleEditChange}>{isEditing ? "Wyniki" : "edycja"}</Button>
             </Box>
 
             {isEditing &&
