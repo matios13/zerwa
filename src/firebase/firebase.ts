@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { getFirestore, connectFirestoreEmulator, enableIndexedDbPersistence } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAQBOlgI52F-gSubPxgxEjs5f9M1lznmQs",
@@ -19,4 +19,8 @@ if(window.location.hostname==="localhost"){
   connectAuthEmulator(getAuth(),"http://localhost:9099")
   connectFirestoreEmulator(getFirestore(), 'localhost', 8080);
 }
+enableIndexedDbPersistence(getFirestore())
+  .catch((err) => {
+      console.error(err)
+  });
 // Initialize Firebase
