@@ -16,6 +16,7 @@ export const EventResultComponent: FC<Props> = ({ event, menuElement }) => {
                 (<>
                     {menuElement}
                     <Typography align="center" variant="h6" m={1} >{event.name}</Typography>
+                    <Typography align="center" m={1} >Pamiętaj o wypełnieniu kartki i oddaniu jej na zerwie!</Typography>
                 </>
                 )}
 
